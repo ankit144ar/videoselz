@@ -1,0 +1,8 @@
+{
+  "name": "videoselz",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
+}
