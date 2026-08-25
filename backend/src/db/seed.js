@@ -1,83 +1,190 @@
 const db = require('./database');
 
 const products = [
-  ['Classic Black T-Shirt', 29.99],
-  ['Running Shoes', 89.99],
-  ['Wireless Headphones', 129.99],
-  ['Travel Backpack', 59.99],
-  ['Denim Jacket', 79.99]
+  {
+    name: 'Classic Black T-Shirt',
+    price: 29.99
+  },
+  {
+    name: 'Running Shoes',
+    price: 89.99
+  },
+  {
+    name: 'Wireless Headphones',
+    price: 129.99
+  },
+  {
+    name: 'Travel Backpack',
+    price: 59.99
+  },
+  {
+    name: 'Denim Jacket',
+    price: 79.99
+  }
 ];
 
 const videos = [
-  [1, 'https://example.com/videos/tshirt-styling.mp4', 'Black T-Shirt Styling'],
-  [1, 'https://example.com/videos/tshirt-review.mp4', 'Black T-Shirt Review'],
-  [2, 'https://example.com/videos/running-shoes-demo.mp4', 'Running Shoes Demo'],
-  [2, 'https://example.com/videos/running-shoes-unboxing.mp4', 'Running Shoes Unboxing'],
-  [3, 'https://example.com/videos/headphones-review.mp4', 'Headphones Review'],
-  [3, 'https://example.com/videos/headphones-demo.mp4', 'Headphones Quick Demo'],
-  [4, 'https://example.com/videos/backpack-tour.mp4', 'Travel Backpack Tour'],
-  [4, 'https://example.com/videos/backpack-test.mp4', 'Backpack Durability Test'],
-  [5, 'https://example.com/videos/jacket-styling.mp4', 'Denim Jacket Styling'],
-  [5, 'https://example.com/videos/jacket-review.mp4', 'Denim Jacket Review']
+  {
+    productIndex: 0,
+    videoUrl: 'https://example.com/videos/tshirt-styling.mp4',
+    title: 'Black T-Shirt Styling'
+  },
+  {
+    productIndex: 0,
+    videoUrl: 'https://example.com/videos/tshirt-review.mp4',
+    title: 'Black T-Shirt Review'
+  },
+  {
+    productIndex: 1,
+    videoUrl: 'https://example.com/videos/running-shoes-demo.mp4',
+    title: 'Running Shoes Demo'
+  },
+  {
+    productIndex: 1,
+    videoUrl: 'https://example.com/videos/running-shoes-unboxing.mp4',
+    title: 'Running Shoes Unboxing'
+  },
+  {
+    productIndex: 2,
+    videoUrl: 'https://example.com/videos/headphones-review.mp4',
+    title: 'Headphones Review'
+  },
+  {
+    productIndex: 2,
+    videoUrl: 'https://example.com/videos/headphones-demo.mp4',
+    title: 'Headphones Quick Demo'
+  },
+  {
+    productIndex: 3,
+    videoUrl: 'https://example.com/videos/backpack-tour.mp4',
+    title: 'Travel Backpack Tour'
+  },
+  {
+    productIndex: 3,
+    videoUrl: 'https://example.com/videos/backpack-test.mp4',
+    title: 'Backpack Durability Test'
+  },
+  {
+    productIndex: 4,
+    videoUrl: 'https://example.com/videos/jacket-styling.mp4',
+    title: 'Denim Jacket Styling'
+  },
+  {
+    productIndex: 4,
+    videoUrl: 'https://example.com/videos/jacket-review.mp4',
+    title: 'Denim Jacket Review'
+  }
 ];
 
 function runSeed() {
   db.serialize(() => {
-    db.run('DELETE FROM engagement_events');
-    db.run('DELETE FROM videos');
-    db.run('DELETE FROM products');
+    db.exec(
+      `
+        DELETE FROM engagement_events;
+        DELETE FROM videos;
+        DELETE FROM products;
+      `,
+      (error) => {
+        if (error) {
+          console.error('Failed to clear existing data:', error.message);
+          process.exit(1);
+        }
 
-    const productStatement = db.prepare(
-      'INSERT INTO products (name, price) VALUES (?, ?)'
-    );
+        const productIds = [];
 
-    products.forEach(([name, price]) => {
-      productStatement.run(name, price);
-    });
+        const productStatement = db.prepare(
+          'INSERT INTO products (name, price) VALUES (?, ?)'
+        );
 
-    productStatement.finalize();
+        products.forEach((product, index) => {
+          productStatement.run(
+            product.name,
+            product.price,
+            function (insertError) {
+              if (insertError) {
+                console.error('Failed to insert product:', insertError.message);
+                process.exit(1);
+              }
 
-    const videoStatement = db.prepare(
-      'INSERT INTO videos (product_id, video_url, title) VALUES (?, ?, ?)'
-    );
+              productIds[index] = this.lastID;
+            }
+          );
+        });
 
-    videos.forEach(([productId, videoUrl, title]) => {
-      videoStatement.run(productId, videoUrl, title);
-    });
-
-    videoStatement.finalize(() => {
-      seedEvents();
-    });
+        productStatement.finalize(() => {
+          seedVideos(productIds);
+        });
+      }
+      );
   });
 }
 
-function seedEvents() {
-  const eventTypes = ['view', 'click', 'add_to_cart'];
+function seedVideos(productIds) {
+  const videoIds = [];
 
-  const eventStatement = db.prepare(
-    'INSERT INTO engagement_events (video_id, event_type) VALUES (?, ?)'
+  const videoStatement = db.prepare(
+    `
+      INSERT INTO videos (product_id, video_url, title)
+      VALUES (?, ?, ?)
+    `
   );
 
-  for (let videoId = 1; videoId <= 10; videoId += 1) {
-    const viewCount = 5 + videoId;
+  videos.forEach((video, index) => {
+    const productId = productIds[video.productIndex];
+
+    videoStatement.run(
+      productId,
+      video.videoUrl,
+      video.title,
+      function (error) {
+        if (error) {
+          console.error('Failed to insert video:', error.message);
+          process.exit(1);
+        }
+
+        videoIds[index] = this.lastID;
+      }
+    );
+  });
+
+  videoStatement.finalize(() => {
+    seedEvents(videoIds);
+  });
+}
+
+function seedEvents(videoIds) {
+  const eventStatement = db.prepare(
+    `
+      INSERT INTO engagement_events (video_id, event_type)
+      VALUES (?, ?)
+    `
+  );
+
+  videoIds.forEach((videoId, index) => {
+    const viewCount = 5 + index;
     const clickCount = Math.floor(viewCount / 2);
     const addToCartCount = Math.floor(clickCount / 2);
 
     for (let i = 0; i < viewCount; i += 1) {
-      eventStatement.run(videoId, eventTypes[0]);
+      eventStatement.run(videoId, 'view');
     }
 
     for (let i = 0; i < clickCount; i += 1) {
-      eventStatement.run(videoId, eventTypes[1]);
+      eventStatement.run(videoId, 'click');
     }
 
     for (let i = 0; i < addToCartCount; i += 1) {
-      eventStatement.run(videoId, eventTypes[2]);
+      eventStatement.run(videoId, 'add_to_cart');
     }
-  }
+  });
 
-  eventStatement.finalize(() => {
-    console.log('Seed completed.');
+  eventStatement.finalize((error) => {
+    if (error) {
+      console.error('Failed to seed events:', error.message);
+      process.exit(1);
+    }
+
+    console.log('Seed completed successfully.');
     db.close();
   });
 }
