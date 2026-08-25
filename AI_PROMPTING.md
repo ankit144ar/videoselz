@@ -9,3 +9,29 @@ Here's my current seed.js:
 
 Can you help me find what's causing the foreign key error and suggest a
 simple fix that makes the seed safe to run multiple times?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+I'm implementing POST /api/events now.
+
+I have the repository and service already.
+
+I want the endpoint to validate videoId, eventType and timestamp, return
+400 for a bad payload and 201 for a successful event.
+
+Here's what I currently have:
+
+Can you look over the flow and tell me if I'm putting the validation and
+error handling in the right places?
