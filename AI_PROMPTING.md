@@ -50,3 +50,19 @@ Videos with no events still need to show up with zero counts.
 I'm using SQLite and this is the query I wrote:
 
 [paste your actual query]
+
+
+
+
+
+
+
+My Express API tests use Jest and Supertest, but they're currently using
+my development SQLite database.
+
+I don't want tests changing my local development data.
+
+What's a simple way to give Jest its own SQLite database and seed a small
+amount of test data before the tests run?
+
+I'm using the sqlite3 package and plain JavaScript.
