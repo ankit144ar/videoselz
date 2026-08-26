@@ -1,12 +1,13 @@
 function SimulateTrafficButton({
   onClick,
-  loading
+  loading,
+  disabled
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      disabled={loading}
+      disabled={loading || disabled}
     >
       {loading ? 'Simulating...' : 'Simulate Traffic'}
     </button>

@@ -9,100 +9,107 @@ import SimulateTrafficButton from '../components/SimulateTrafficButton';
 import { simulateTraffic } from '../services/trafficSimulationService';
 
 function Dashboard() {
-  const [page, setPage] = useState(1);
-  const [simulationLoading, setSimulationLoading] = useState(false);
-  const [simulationMessage, setSimulationMessage] = useState(null);
-  const [simulationError, setSimulationError] = useState(null);
+    const [page, setPage] = useState(1);
+    const [simulationLoading, setSimulationLoading] = useState(false);
+    const [simulationMessage, setSimulationMessage] = useState(null);
+    const [simulationError, setSimulationError] = useState(null);
 
-  const limit = 5;
+    const limit = 5;
 
-  const {
-    videos,
-    pagination,
-    loading,
-    error,
-    refresh
-  } = useVideoAnalytics(page, limit);
+    const {
+        videos,
+        pagination,
+        loading,
+        error,
+        refresh
+    } = useVideoAnalytics(page, limit);
 
-  async function handleSimulateTraffic() {
-    setSimulationLoading(true);
-    setSimulationMessage(null);
-    setSimulationError(null);
+    async function handleSimulateTraffic() {
+        setSimulationLoading(true);
+        setSimulationMessage(null);
+        setSimulationError(null);
 
-    try {
-      const result = await simulateTraffic(videos);
+        try {
+            const result = await simulateTraffic(videos);
 
-      setSimulationMessage(
-        `Simulated "${result.data.eventType}" event.`
-      );
+            setSimulationMessage(
+                `Simulated "${result.data.eventType}" event.`
+            );
 
-      await refresh();
-    } catch (err) {
-      setSimulationError(err.message);
-    } finally {
-      setSimulationLoading(false);
+            await refresh();
+        } catch (err) {
+            setSimulationError(err.message);
+        } finally {
+            setSimulationLoading(false);
+        }
     }
-  }
 
-  function goToPreviousPage() {
-    setPage((currentPage) => currentPage - 1);
-  }
+    function goToPreviousPage() {
+        setPage((currentPage) => currentPage - 1);
+    }
 
-  function goToNextPage() {
-    setPage((currentPage) => currentPage + 1);
-  }
+    function goToNextPage() {
+        setPage((currentPage) => currentPage + 1);
+    }
 
-  return (
-    <main>
-      <div className="dashboard-header">
-        <div>
-          <h1>Shoppable Video Analytics</h1>
-          <p>Track engagement with your shoppable videos.</p>
-        </div>
+    return (
+        <main>
+            <div className="dashboard-header">
+                <div>
+                    <h1>Shoppable Video Analytics</h1>
+                    <p>Track engagement with your shoppable videos.</p>
+                </div>
 
-        <SimulateTrafficButton
-          onClick={handleSimulateTraffic}
-          loading={simulationLoading}
-        />
-      </div>
+                <SimulateTrafficButton
+                    onClick={handleSimulateTraffic}
+                    loading={simulationLoading}
+                    disabled={videos.length === 0}
+                />
+            </div>
 
-      {simulationMessage && (
-        <p role="status">
-          {simulationMessage}
-        </p>
-      )}
+            {simulationMessage && (
+                <p
+                    className="feedback-message"
+                    role="status"
+                >
+                    {simulationMessage}
+                </p>
+            )}
 
-      {simulationError && (
-        <p role="alert">
-          {simulationError}
-        </p>
-      )}
+            {simulationError && (
+                <p
+                    className="feedback-message error"
+                    role="alert"
+                >
+                    {simulationError}
+                </p>
+            )}
 
-      {loading && <LoadingState />}
+            {loading && <LoadingState />}
 
-      {!loading && error && (
-        <ErrorState
-          message={error}
-          onRetry={refresh}
-        />
-      )}
+            {!loading && error && (
+                <ErrorState
+                    message={error}
+                    onRetry={refresh}
+                />
+            )}
 
-      {!loading && !error && (
-        <>
-          <VideoAnalyticsTable videos={videos} />
+            {!loading && !error && (
+                <>
+                    <VideoAnalyticsTable videos={videos} />
 
-          {pagination && (
-            <Pagination
-              page={pagination.page}
-              totalPages={pagination.totalPages}
-              onPrevious={goToPreviousPage}
-              onNext={goToNextPage}
-            />
-          )}
-        </>
-      )}
-    </main>
-  );
+                    {pagination && (
+                        <Pagination
+                            page={pagination.page}
+                            totalPages={pagination.totalPages}
+                            onPrevious={goToPreviousPage}
+                            onNext={goToNextPage}
+                        />
+                    )}
+                </>
+            )}
+        </main>
+    );
 }
 
 export default Dashboard;

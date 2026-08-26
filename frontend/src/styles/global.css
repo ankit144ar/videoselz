@@ -96,6 +96,18 @@ button {
   margin: 0;
 }
 
+.feedback-message {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid #ddd;
+}
+
+.feedback-message.error {
+  border-color: #d33;
+}
+
 @media (max-width: 768px) {
   .dashboard-header {
     align-items: flex-start;
