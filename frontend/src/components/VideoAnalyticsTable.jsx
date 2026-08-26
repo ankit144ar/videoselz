@@ -1,10 +1,12 @@
+import EmptyState from './EmptyState';
+
 function VideoAnalyticsTable({ videos }) {
   if (videos.length === 0) {
-    return <p>No video analytics available.</p>;
+    return <EmptyState />;
   }
 
   return (
-    <div>
+    <div className="table-container">
       <table>
         <thead>
           <tr>
