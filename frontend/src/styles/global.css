@@ -52,3 +52,10 @@ th {
     padding: 10px 8px;
   }
 }
+.state-container {
+  padding: 40px 20px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}

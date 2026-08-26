@@ -1,5 +1,6 @@
 import useVideoAnalytics from '../hooks/useVideoAnalytics';
 import VideoAnalyticsTable from '../components/VideoAnalyticsTable';
+import LoadingState from '../components/LoadingState';
 
 function Dashboard() {
   const {
@@ -13,7 +14,7 @@ function Dashboard() {
     <main>
       <h1>Shoppable Video Analytics</h1>
 
-      {loading && <p>Loading analytics...</p>}
+      {loading && <LoadingState />}
 
       {error && (
         <p>
