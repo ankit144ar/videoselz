@@ -1,27 +1,37 @@
 import useVideoAnalytics from '../hooks/useVideoAnalytics';
+import VideoAnalyticsTable from '../components/VideoAnalyticsTable';
 
 function Dashboard() {
   const {
     videos,
+    pagination,
     loading,
     error
   } = useVideoAnalytics();
-
-  if (loading) {
-    return <main>Loading analytics...</main>;
-  }
-
-  if (error) {
-    return <main>Failed to load analytics: {error}</main>;
-  }
 
   return (
     <main>
       <h1>Shoppable Video Analytics</h1>
 
-      <p>
-        {videos.length} videos loaded.
-      </p>
+      {loading && <p>Loading analytics...</p>}
+
+      {error && (
+        <p>
+          Failed to load analytics: {error}
+        </p>
+      )}
+
+      {!loading && !error && (
+        <>
+          <VideoAnalyticsTable videos={videos} />
+
+          {pagination && (
+            <p>
+              Page {pagination.page} of {pagination.totalPages}
+            </p>
+          )}
+        </>
+      )}
     </main>
   );
 }
