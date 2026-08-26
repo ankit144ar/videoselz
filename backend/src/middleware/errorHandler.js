@@ -10,6 +10,12 @@ function errorHandler(error, req, res, next) {
     'Unhandled application error'
   );
 
+  if (error.statusCode) {
+    return res.status(error.statusCode).json({
+      error: error.message
+    });
+  }
+
   if (error.code === 'SQLITE_CONSTRAINT') {
     return res.status(400).json({
       error: 'Database constraint failed'
