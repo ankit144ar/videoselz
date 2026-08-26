@@ -1,13 +1,15 @@
 import useVideoAnalytics from '../hooks/useVideoAnalytics';
 import VideoAnalyticsTable from '../components/VideoAnalyticsTable';
 import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 
 function Dashboard() {
   const {
     videos,
     pagination,
     loading,
-    error
+    error,
+    refresh
   } = useVideoAnalytics();
 
   return (
@@ -16,10 +18,11 @@ function Dashboard() {
 
       {loading && <LoadingState />}
 
-      {error && (
-        <p>
-          Failed to load analytics: {error}
-        </p>
+      {!loading && error && (
+        <ErrorState
+          message={error}
+          onRetry={refresh}
+        />
       )}
 
       {!loading && !error && (
