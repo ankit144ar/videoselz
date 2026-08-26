@@ -22,8 +22,14 @@ export async function simulateTraffic(videos) {
   const video = getRandomItem(videos);
   const eventType = getRandomItem(EVENT_TYPES);
 
-  return createEngagementEvent({
+  const response = await createEngagementEvent({
     videoId: video.id,
     eventType
   });
+
+  return {
+    ...response,
+    video,
+    eventType
+  };
 }

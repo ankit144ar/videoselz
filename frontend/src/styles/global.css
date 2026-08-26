@@ -183,3 +183,21 @@ button:focus-visible {
   outline: 2px solid #222;
   outline-offset: 2px;
 }
+
+.row-highlight {
+  animation: highlight-row 1.5s ease-out;
+}
+
+@keyframes highlight-row {
+  0% {
+    background: #fff;
+  }
+
+  30% {
+    background: #eef6ff;
+  }
+
+  100% {
+    background: #fff;
+  }
+}

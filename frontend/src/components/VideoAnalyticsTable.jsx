@@ -1,7 +1,10 @@
 import EmptyState from './EmptyState';
 import { calculateConversionRate } from '../utils/analytics';
 
-function VideoAnalyticsTable({ videos }) {
+function VideoAnalyticsTable({
+  videos,
+  highlightedVideoId
+}) {
   if (videos.length === 0) {
     return <EmptyState />;
   }
@@ -34,8 +37,14 @@ function VideoAnalyticsTable({ videos }) {
               views
             );
 
+            const isHighlighted =
+              video.id === highlightedVideoId;
+
             return (
-              <tr key={video.id}>
+              <tr
+                key={video.id}
+                className={isHighlighted ? 'row-highlight' : ''}
+              >
                 <td>{video.title}</td>
                 <td>{views}</td>
                 <td>{clicks}</td>
