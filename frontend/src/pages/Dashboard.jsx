@@ -1,16 +1,30 @@
+import { useState } from 'react';
+
 import useVideoAnalytics from '../hooks/useVideoAnalytics';
 import VideoAnalyticsTable from '../components/VideoAnalyticsTable';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
+import Pagination from '../components/Pagination';
 
 function Dashboard() {
+  const [page, setPage] = useState(1);
+  const limit = 5;
+
   const {
     videos,
     pagination,
     loading,
     error,
     refresh
-  } = useVideoAnalytics();
+  } = useVideoAnalytics(page, limit);
+
+  function goToPreviousPage() {
+    setPage((currentPage) => currentPage - 1);
+  }
+
+  function goToNextPage() {
+    setPage((currentPage) => currentPage + 1);
+  }
 
   return (
     <main>
@@ -30,9 +44,12 @@ function Dashboard() {
           <VideoAnalyticsTable videos={videos} />
 
           {pagination && (
-            <p>
-              Page {pagination.page} of {pagination.totalPages}
-            </p>
+            <Pagination
+              page={pagination.page}
+              totalPages={pagination.totalPages}
+              onPrevious={goToPreviousPage}
+              onNext={goToNextPage}
+            />
           )}
         </>
       )}
