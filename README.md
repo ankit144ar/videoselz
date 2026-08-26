@@ -572,6 +572,26 @@ for more information.
 
 ---
 
+# Submission Videos
+
+## 30-Second YouTube Pitch
+
+Add the unlisted/private YouTube link here before submission:
+
+```text
+https://youtu.be/WE7lFponN9w
+```
+
+## Technical Walkthrough
+
+Add the 3–5 minute Loom or screen-recording link here before submission:
+
+```text
+https://www.loom.com/share/a16cc2f2939b46838f633504c641ba99
+```
+
+---
+
 # License
 
 This project was created as part of the Videoselz Full Stack Developer
