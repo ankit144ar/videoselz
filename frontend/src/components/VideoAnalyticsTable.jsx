@@ -9,13 +9,17 @@ function VideoAnalyticsTable({ videos }) {
   return (
     <div className="table-container">
       <table>
+        <caption className="visually-hidden">
+          Shoppable video performance metrics
+        </caption>
+
         <thead>
           <tr>
-            <th>Video</th>
-            <th>Views</th>
-            <th>Clicks</th>
-            <th>Conversions</th>
-            <th>Conversion Rate</th>
+            <th scope="col">Video</th>
+            <th scope="col">Views</th>
+            <th scope="col">Clicks</th>
+            <th scope="col">Conversions</th>
+            <th scope="col">Conversion Rate</th>
           </tr>
         </thead>
 
