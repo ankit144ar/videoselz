@@ -1,16 +1,18 @@
 const analyticsService = require('../services/analyticsService');
+const { paginationSchema } = require('../validators/paginationValidator');
 
 async function getVideoAnalytics(req, res, next) {
   try {
-    const page = Number.parseInt(req.query.page, 10) || 1;
-    const limit = Number.parseInt(req.query.limit, 10) || 10;
+    const validationResult = paginationSchema.safeParse(req.query);
 
-    if (page < 1 || limit < 1 || limit > 100) {
+    if (!validationResult.success) {
       return res.status(400).json({
-        error: 'Invalid pagination parameters'
+        error: 'Invalid pagination parameters',
+        details: validationResult.error.issues
       });
     }
 
+    const { page, limit } = validationResult.data;
     const offset = (page - 1) * limit;
 
     const result = await analyticsService.getVideoAnalytics(
