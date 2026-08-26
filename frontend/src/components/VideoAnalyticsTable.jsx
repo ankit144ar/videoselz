@@ -1,4 +1,5 @@
 import EmptyState from './EmptyState';
+import { calculateConversionRate } from '../utils/analytics';
 
 function VideoAnalyticsTable({ videos }) {
   if (videos.length === 0) {
@@ -21,18 +22,19 @@ function VideoAnalyticsTable({ videos }) {
         <tbody>
           {videos.map((video) => {
             const views = Number(video.views);
+            const clicks = Number(video.clicks);
             const conversions = Number(video.conversions);
 
-            const conversionRate =
-              views > 0
-                ? (conversions / views) * 100
-                : 0;
+            const conversionRate = calculateConversionRate(
+              conversions,
+              views
+            );
 
             return (
               <tr key={video.id}>
                 <td>{video.title}</td>
                 <td>{views}</td>
-                <td>{Number(video.clicks)}</td>
+                <td>{clicks}</td>
                 <td>{conversions}</td>
                 <td>{conversionRate.toFixed(2)}%</td>
               </tr>
