@@ -4,6 +4,7 @@ const pinoHttp = require('pino-http');
 
 const logger = require('./config/logger');
 const eventRoutes = require('./routes/eventRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api', eventRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 module.exports = app;

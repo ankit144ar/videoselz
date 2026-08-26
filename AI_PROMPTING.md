@@ -35,3 +35,18 @@ Here's what I currently have:
 
 Can you look over the flow and tell me if I'm putting the validation and
 error handling in the right places?
+
+
+
+I need to aggregate video engagement events for my dashboard.
+
+For each video I need:
+- views
+- clicks
+- add_to_cart conversions
+
+Videos with no events still need to show up with zero counts.
+
+I'm using SQLite and this is the query I wrote:
+
+[paste your actual query]
